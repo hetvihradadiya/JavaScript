@@ -6,18 +6,21 @@ console.log(msgEL.textContent);
 let bodyEl = document.querySelector('.body');
 let score = 20;
 const guess = Number(document.querySelector('.guess').value);
-let highscore = 0;
+let highscore;
+if (
+  localStorage.getItem('High-Score')
+    ? (highscore = localStorage.getItem('High-Score'))
+    : (highscore = 0)
+);
 console.log('High score is: ' + highscore);
+document.querySelector('.highscore').textContent = highscore;
 
 let random_number = Math.trunc(Math.random() * 20) + 1;
 console.log(random_number);
 let check_btnEl = document.querySelector('.check');
 check_btnEl.addEventListener('click', function () {
   const guess = Number(document.querySelector('.guess').value);
-
-  // console.log(guess);
-  // console.log(typeof guess);
-  // console.log(typeof random_number);
+  localStorage.setItem('score', score);
 
   if (!guess) {
     console.log('There is no number');
@@ -26,6 +29,7 @@ check_btnEl.addEventListener('click', function () {
     msgEL.textContent = 'You are correct 🎉';
     if (score > highscore) {
       highscore = score;
+      localStorage.setItem('High-Score', highscore);
     }
     document.querySelector('.highscore').textContent = highscore;
     document.querySelector('.number').textContent = random_number;
@@ -33,16 +37,18 @@ check_btnEl.addEventListener('click', function () {
     score--;
     document.querySelector('.score').textContent = score;
     msgEL.textContent = 'too close!!';
-  } else if (
-    guess < random_number
-      ? (msgEL.textContent = 'too low!!')
-      : (msgEL.textContent = 'too High!!')
-  );
-  score--;
-  if (score <= 0) {
-    msgEL.textContent = 'You lost the game!';
+  } else if (guess !== random_number) {
+    if (
+      guess < random_number
+        ? (msgEL.textContent = 'too low!!')
+        : (msgEL.textContent = 'too High!!')
+    )
+      score--;
+    if (score <= 0) {
+      msgEL.textContent = 'You lost the game!';
+    }
+    document.querySelector('.score').textContent = score;
   }
-  document.querySelector('.score').textContent = score;
 });
 
 document.querySelector('.again').addEventListener('click', function () {
